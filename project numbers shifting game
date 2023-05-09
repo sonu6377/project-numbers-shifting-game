@@ -1,0 +1,288 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <time.h>
+#include <string.h>
+#include <windows.h>
+#include<conio.h>
+ void createMatrix(int arr[][4])
+ {
+     int n=15;
+     int num[n],i,j;
+     for(i=0;i<n;i++)
+        num[i]=i+1;
+
+     srand(time(NULL));
+
+     int lastindex=n-1,index;
+
+     for(i=0;i<4;i++)
+     {
+         for(j=0;j<4;j++)
+         {
+             if(lastindex>=0)
+             {
+                 index= rand() % (lastindex+1);
+                 arr[i][j]=num[index];
+                 num[index]=num[lastindex--];
+             }
+         }
+     }
+     arr[i-1][j-1]=0;
+ }
+      int readEnteredKey()
+     {
+         char c;
+         c=_getch();
+         if(c== -32)
+            c=_getch();
+
+        return c;
+     }
+
+ void gameRule(int arr[][4])
+ {
+     system("cls");
+     int i,j;
+
+     printf("\t\t matrix PUZZLE \n");
+     printf("\n\t\t rule of this GAME \n");
+     printf("\n 1. you can move only 1 step at a time by arrow key \n");
+
+     printf("\t\t\t move up    : by up arrow key \n");
+     printf("\t\t\t move down  : by down arrow key \n");
+     printf("\t\t\t move left  : by left arrow key \n");
+     printf("\t\t\t move right : by right arrow key \n");
+     printf(" 2. you can move numbers at empty position only \n");
+
+     printf("\n 3. for each valid move : your total numbers of move will decreased by 1 \n");
+     printf(" 4. wining situation : number in a 4*4 matrix should be in order from 1 to 15 \n ");
+     printf("\n \t\t wining situation \n ");
+
+     printf("\n- - - - - - - - - - - - - - -\n ");
+
+     for(i=0;i<4;i++)
+     {
+         printf("  |");
+         for(j=0;j<4;j++)
+         {
+             if(arr[i][j]!=0)
+                printf(" %2d  |",4*i+j+1);
+             else
+                printf("     |");
+         }
+         printf(" \n ");
+     }
+     printf("- - - - - - - - - - - - - - - ");
+
+     printf("\n 5. you can exit the game at any time by pressing 'E' or 'e' \n");
+     printf(" so try to win in minimum no of move \n");
+     printf(" enter any key to start......");
+
+     int x=readEnteredKey();
+     }
+      int winner(int arr[][4])
+     {
+         int i,j,k=1;
+         for(i=0;i<4;i++)
+         {
+             for(j=0;j<4;j++,k++)
+             {
+                 if(arr[i][j]!=k && k !=16)
+                    break;
+             }
+             if(j<4)
+                break;
+         }
+         if(j<4)
+            return 0;
+         return 1;
+     }
+
+     void showMatrix(int arr[][4])
+     {
+         printf("\n- - - - - - - - - - - - - -\n");
+         int i,j;
+         for(i=0;i<4;i++)
+         {
+             printf("  |");
+             for(j=0;j<4;j++)
+             {
+                 if(arr[i][j]!=0)
+                    printf(" %2d  |",arr[i][j]);
+                 else
+                    printf("     |");
+             }
+             printf(" \n");
+         }
+         printf("- - - - - - - - - - - - - - \n");
+     }
+     void swap(int *x , int *y)
+     {
+         *x=*x+*y;
+         *y=*x-*y;
+         *x=*x-*y;
+     }
+     int shiftUp(int arr[][4])
+     {
+         int i,j;
+         for(i=0;i<4;i++)
+         {
+             for(j=0;j<4;j++)
+             {
+                 if(arr[i][j]==0)
+                    break;
+             }
+             if(j<4)
+                break;
+         }
+         if(i==3)
+            return 0;
+
+         swap(&arr[i][j],&arr[i+1][j]);
+         return 1;
+     }
+     int shiftDown(int arr[][4])
+     {
+         int i,j;
+         for(i=0;i<4;i++)
+         {
+             for(j=0;j<4;j++)
+             {
+                 if(arr[i][j]==0)
+                    break;
+             }
+             if(j<4)
+                break;
+         }
+         if(i==0)
+            return 0;
+         swap(&arr[i][j],&arr[i-1][j]);
+         return 1;
+     }
+     int shiftright(int arr[][4])
+     {
+         int i,j;
+         for(i=0;i<4;i++)
+         {
+             for(j=0;j<4;j++)
+             {
+                 if(arr[i][j]==0)
+                    break;
+             }
+             if(j<4)
+                break;
+         }
+         if(j==0)
+            return 0;
+         swap(&arr[i][j],&arr[i][j-1]);
+         return 1;
+     }
+     int shiftLeft(int arr[][4])
+     {
+         int i,j;
+         for(i=0;i<4;i++)
+         {
+             for(j=0;j<4;j++)
+             {
+                 if(arr[i][j]==0)
+                    break;
+             }
+             if(j<4)
+                break;
+         }
+         if(j==3)
+            return 0;
+         swap(&arr[i][j],&arr[i][j+1]);
+         return 1;
+     }
+
+ int main()
+ {
+     int arr[4][4];
+     int maxtry=10,k;
+     char name[20];
+     for(k=0;k<4;k++)
+        printf("\n");
+
+     printf(" enter the player name : ");
+     scanf("%s",name);
+
+     system("cls");
+
+     while(1)
+     {
+         createMatrix(arr);
+         gameRule(arr);
+
+    while(!winner(arr))
+       {
+           system("cls");
+           if(!maxtry)
+            break;
+
+           printf("\n\n\t player = %s , move=%d \n\n",name,maxtry);
+           showMatrix(arr);
+           int key =readEnteredKey();
+
+           switch(key)
+           {
+           case 101:
+
+           case 69:
+                    printf("\a\a\a\a\n thanks for playing game \n \a");
+                    printf("\n hit the 'enter' for exit game ");
+                    key=readEnteredKey();
+                    return 0;
+           case 72:
+                   if(shiftUp(arr));
+                   maxtry--;
+                   break;
+           case 80:
+                   if(shiftDown(arr))
+                    maxtry--;
+                   break;
+
+          case 77:
+                   if(shiftright(arr))
+                    maxtry--;
+                   break;
+           case 75:
+                   if(shiftLeft(arr))
+                    maxtry--;
+                   break;
+
+           default :
+                   printf(" not allow ");
+           }
+       }
+       if(!maxtry)
+        printf("\n\n     you lose   \n\n");
+       else
+        printf(" \n \a\a congratulations %s for wining this game ",name);
+
+       fflush(stdin);
+
+       char check;
+       printf(" \n want to play again \n ");
+       printf(" enter 'Y' to play again :");
+       scanf("%c",&check);
+
+       if((check!='Y') && (check!='y'))
+        break;
+
+       maxtry=5;
+     }
+     return 0;
+ }
+
+
+
+
+
+
+
+
+
+
+
